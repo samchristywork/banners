@@ -1,9 +1,22 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use serde::Deserialize;
 
+#[derive(Deserialize, Debug)]
+pub struct BannerQuery {
+    fg: Option<String>,
+    bg: Option<String>,
+    symbol: Option<String>,
+}
 
-#[get("/banner/")]
-async fn banner() -> impl Responder {
+#[derive(Deserialize)]
+pub struct BannerPath {
+    title: String,
+    text: String,
+}
+
+
+#[get("/banner/{title}/{text}")]
+async fn banner(data: web::Path<BannerPath>, query: web::Query<BannerQuery>) -> impl Responder {
     HttpResponse::Ok().content_type("image/svg+xml").body("")
 }
 
