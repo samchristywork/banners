@@ -34,7 +34,15 @@ async fn banner(data: web::Path<BannerPath>, query: web::Query<BannerQuery>) -> 
     let res = format!("<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">
 <svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"{width}\" height=\"{height}\">
-</svg>");
+<rect fill=\"#{bg}\" x=\"0\" y=\"0\" width=\"{width}\" height=\"{height}\"/>
+<rect fill=\"#{fg}\" x=\"87\" y=\"11\" width=\"10\" height=\"50\"/>
+<g transform=\"scale(1)\">
+  <text fill=\"#{fg}\" x=\"110\" y=\"40\" font-size=\"33px\" font-weight=\"bold\" font-family=\"sans serif\">{title}</text>
+  <text fill=\"#{fg}\" x=\"110\" y=\"55\" font-size=\"13px\">{text}</text>
+  <g transform=\"translate(5 0) scale(3)\">
+  {icon}
+  </g>
+</g></svg>");
 
     HttpResponse::Ok().content_type("image/svg+xml").body(res)
 }
