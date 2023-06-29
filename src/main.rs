@@ -44,9 +44,11 @@ fn hex_color(input: &str) -> IResult<&str, Color> {
 }
 
 fn darken(hex: &str) -> String {
-    let red_component = hex_color(hex).unwrap().1.red;
-    let green_component = hex_color(hex).unwrap().1.green;
-    let blue_component = hex_color(hex).unwrap().1.blue;
+    let hex = hex.chars().filter(|c| *c != '#').collect::<String>();
+
+    let red_component = hex_color(&hex).unwrap().1.red;
+    let green_component = hex_color(&hex).unwrap().1.green;
+    let blue_component = hex_color(&hex).unwrap().1.blue;
 
     let amount = 0.3;
 
@@ -69,6 +71,9 @@ async fn banner(query: web::Query<BannerQuery>) -> impl Responder {
     let bg = query.bg.clone().unwrap_or("999999".to_string());
     let fg = query.fg.clone().unwrap_or(darken(bg.as_str()));
     let symbol = query.symbol.clone().unwrap_or("question_mark".to_string());
+
+    let fg = fg.chars().filter(|c| *c != '#').collect::<String>();
+    let bg = bg.chars().filter(|c| *c != '#').collect::<String>();
 
     let filename = format!("icons/outlined/{symbol}.svg");
     let icon = std::fs::read_to_string(filename).unwrap();
