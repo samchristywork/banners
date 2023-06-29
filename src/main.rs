@@ -40,13 +40,31 @@ fn hex_color(input: &str) -> IResult<&str, Color> {
     Ok((input, Color { red, green, blue }))
 }
 
+fn darken(hex: &str) -> String {
+    let red_component = hex_color(hex).unwrap().1.red;
+    let green_component = hex_color(hex).unwrap().1.green;
+    let blue_component = hex_color(hex).unwrap().1.blue;
+
+    let amount = 0.3;
+
+    let red = red_component as f32 * amount;
+    let green = green_component as f32 * amount;
+    let blue = blue_component as f32 * amount;
+
+    let red = red as u8;
+    let green = green as u8;
+    let blue = blue as u8;
+
+    format!("{:02x}{:02x}{:02x}", red, green, blue)
+}
+
 #[get("/banner/{title}/{text}")]
 async fn banner(data: web::Path<BannerPath>, query: web::Query<BannerQuery>) -> impl Responder {
     let title = data.title.clone();
     let text = data.text.clone();
 
     let bg = query.bg.clone().unwrap_or("999999".to_string());
-    let fg = query.fg.clone().unwrap_or("000000".to_string());
+    let fg = query.fg.clone().unwrap_or(darken(bg.as_str()));
     let symbol = query.symbol.clone().unwrap_or("question_mark".to_string());
 
     let filename = format!("icons/outlined/{symbol}.svg");
