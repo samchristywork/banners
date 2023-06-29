@@ -90,11 +90,32 @@ async fn banner(data: web::Path<BannerPath>, query: web::Query<BannerQuery>) -> 
     HttpResponse::Ok().content_type("image/svg+xml").body(res)
 }
 
+#[get("/list_icons")]
+async fn list_icons() -> impl Responder {
+    let mut res = String::from("{\"icons\": [");
+    let mut first = true;
+    for entry in std::fs::read_dir("icons/outlined").unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        let filename = path.file_stem().unwrap().to_str().unwrap();
+        if first {
+            first = false;
+        } else {
+            res.push_str(",");
+        }
+        res.push_str(format!("\"{}\"", filename).as_str());
+    }
+    res.push_str("]}");
+
+    HttpResponse::Ok().content_type("application/json").body(res)
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(banner)
+            .service(list_icons)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
