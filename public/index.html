@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Banner Config</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css" type="text/css">
+  </head>
+  <body>
+
+    <h2>Banner Config:</h2>
+
+    <form action="/banner" method="get">
+
+      <label for="title">Primary Text:</label><br>
+      <input type="text" id="title" name="title"><br><br>
+
+      <label for="text">Secondary Text:</label><br>
+      <input type="text" id="text" name="text"><br><br>
+
+      <label for="fg">Foreground Color:</label><br>
+      <input type="color" id="fg" name="fg" value="#000000"><br><br>
+
+      <label for="bg">Background Color:</label><br>
+      <input type="color" id="bg" name="bg" value="#FFFFFF"><br><br>
+
+      <label for="symbol">Symbol:</label><br>
+      <select id="symbol" name="symbol">
+      </select><br><br>
+
+      <input type="submit" value="Submit">
+
+    </form>
+
+  </body>
+  <script>
+    fetch('/list_icons')
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById('symbol');
+        data.icons.sort();
+        data.icons.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  </script>
+</html>
