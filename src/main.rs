@@ -12,6 +12,8 @@ pub struct Color {
 
 #[derive(Deserialize, Debug)]
 pub struct BannerQuery {
+    title: String,
+    text: String,
     fg: Option<String>,
     bg: Option<String>,
     symbol: Option<String>,
@@ -59,10 +61,10 @@ fn darken(hex: &str) -> String {
     format!("{:02x}{:02x}{:02x}", red, green, blue)
 }
 
-#[get("/banner/{title}/{text}")]
-async fn banner(data: web::Path<BannerPath>, query: web::Query<BannerQuery>) -> impl Responder {
-    let title = data.title.clone();
-    let text = data.text.clone();
+#[get("/banner")]
+async fn banner(query: web::Query<BannerQuery>) -> impl Responder {
+    let title = query.title.clone();
+    let text = query.text.clone();
 
     let bg = query.bg.clone().unwrap_or("999999".to_string());
     let fg = query.fg.clone().unwrap_or(darken(bg.as_str()));
