@@ -1,6 +1,7 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use nom::{bytes::complete::take_while_m_n, combinator::map_res, sequence::tuple, IResult};
 use serde::Deserialize;
+use actix_files::Files;
 
 #[derive(Debug, PartialEq)]
 pub struct Color {
@@ -116,6 +117,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(banner)
             .service(list_icons)
+            .service(Files::new("/", "./public/"))
     })
     .bind(("127.0.0.1", 8080))?
     .run()
